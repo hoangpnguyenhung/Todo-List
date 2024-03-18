@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { routes } from "./routes/routes";
+import MainLayout from "./components/layouts/MainLayout";
+import { ThemeProvider } from "@mui/material";
+import { themeConfig } from "./configs/theme.config";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
 
-function App() {
+const App: React.FC = () => {
+  const mode = useSelector((state: RootState) => state.themeSlice.mode);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={themeConfig.themeMode({ mode })}>
+      <div className="App">
+        {/* reset css */}
+        <CssBaseline />
+        {/* reset css */}
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              {routes.map((route, index) =>
+                route.index ? (
+                  <Route index element={route.element} key={index} />
+                ) : (
+                  <Route
+                    path={route.path}
+                    element={route.element}
+                    key={index}
+                  />
+                )
+              )}
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
